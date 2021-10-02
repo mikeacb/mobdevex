@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:examenu2/components/background.dart';
-import 'package:examenu2/pages/register_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
-class LoginPage extends StatelessWidget {
-  String _user = ""; //_ quiere decir que es privada
+class RegisterPage extends StatelessWidget {
+  //_ quiere decir que es privada
+  String _name = "";
+  String _user = "";
   String _pass = "";
+  String _temppass = ""; //Comprobación que las contraseñas coincidan
+  String _email = ""; //Validación del email
+
   var _formKey = GlobalKey<FormState>();
 
-  LoginPage({Key? key}) : super(key: key);
+  RegisterPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,21 +26,40 @@ class LoginPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SizedBox(
+            height: size.height * 0.10,
+          ),
           Container(
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.symmetric(horizontal: 40),
             child: Text(
-              "Login",
+              "Sing in",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF2661FA),
-                  fontSize: 36),
+                  fontSize: 26),
               textAlign: TextAlign.left,
+            ),
+          ),
+          SizedBox(
+            height: size.height * 0.05,
+          ),
+          //Nombre
+          Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.symmetric(horizontal: 40),
+            child: TextFormField(
+              validator: (value) =>
+                  value.toString().isEmpty ? "El nombre es obligatorio" : null,
+              onSaved: (value) => this._name = value.toString(),
+              decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.person), labelText: "Nombre completo"),
             ),
           ),
           SizedBox(
             height: size.height * 0.03,
           ),
+          //Usuario
           Container(
             alignment: Alignment.center,
             margin: EdgeInsets.symmetric(horizontal: 40),
@@ -44,12 +68,29 @@ class LoginPage extends StatelessWidget {
                   value.toString().isEmpty ? "El usuario es obligatorio" : null,
               onSaved: (value) => this._user = value.toString(),
               decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.email), labelText: "Usuario"),
+                  prefixIcon: Icon(Icons.person_outlined),
+                  labelText: "Usuario"),
             ),
           ),
           SizedBox(
             height: size.height * 0.03,
           ),
+          //Email
+          Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.symmetric(horizontal: 40),
+            child: TextFormField(
+              validator: (value) =>
+                  value.toString().isEmpty ? "El email es obligatorio" : null,
+              onSaved: (value) => this._email = value.toString(),
+              decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.email), labelText: "Email"),
+            ),
+          ),
+          SizedBox(
+            height: size.height * 0.03,
+          ),
+          //Contraseña
           Container(
             alignment: Alignment.center,
             margin: EdgeInsets.symmetric(horizontal: 40),
@@ -63,19 +104,59 @@ class LoginPage extends StatelessWidget {
                   prefixIcon: Icon(Icons.lock), labelText: "Contraseña"),
             ),
           ),
-          Container(
-              alignment: Alignment.centerRight,
-              margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-              child: GestureDetector(
-                  onTap: () {
-                    print("Click en olvidé la contraseña!");
-                  },
-                  child: Text(
-                    "¿Se te olvió la contraseña?",
-                    style: TextStyle(fontSize: 12, color: Color(0xFF2661FA)),
-                  ))),
           SizedBox(
-            height: size.height * 0.05,
+            height: size.height * 0.03,
+          ),
+          //Verificar la contraseña
+          Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.symmetric(horizontal: 40),
+            child: TextFormField(
+              obscureText: true,
+              validator: (value) {
+                if (value.toString().isEmpty) {
+                  return "Reescribe la contraseña";
+                } else {
+                  if (_pass != _temppass) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Row(
+                        children: [
+                          Icon(
+                            Icons.error,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: Text("Las contraseñas no son iguales"),
+                          )
+                        ],
+                      ),
+                      duration: Duration(seconds: 2),
+                    ));
+                    print("Contraseñas NO");
+                    print("1.- " + _pass);
+                    print("2.- " + _temppass);
+                  } else {
+                    print("Las contraseñas si coinciden");
+                    //Aqui
+                    this._temppass = value.toString();
+                    print("Contraseñas SI");
+                    print("1.- " + _pass);
+                    print("2.- " + _temppass);
+                  }
+                }
+              },
+              onSaved: (value) => value.toString(),
+              decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.verified_user),
+                  labelText: "Reescribir la contraseña"),
+            ),
+          ),
+          SizedBox(
+            height: size.height * 0.03,
           ),
           Container(
             alignment: Alignment.centerRight,
@@ -84,12 +165,12 @@ class LoginPage extends StatelessWidget {
               onPressed: () {
                 final form = _formKey.currentState;
                 if (form!.validate()) {
-                  print("Válido");
-                  print(_user);
-                  print(_pass);
+                  //print("Válido");
+                  //print(_user);
+                  //print(_pass);
                   form.save();
-                  print(_user);
-                  print(_pass);
+                  //print(_user);
+                  //print(_pass);
                   if (_user == "mike" && _pass == "Mike06") {
                     //Mandar a home
                   } else {
@@ -129,7 +210,7 @@ class LoginPage extends StatelessWidget {
                       Color.fromARGB(255, 255, 177, 41)
                     ])),
                 child: Text(
-                  "Entrar",
+                  "Guardar",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.white),
@@ -143,11 +224,11 @@ class LoginPage extends StatelessWidget {
             child: GestureDetector(
               onTap: () {
                 print("Click en registrar!");
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RegisterPage()));
+                Navigator.pop(context);
+                //Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
               },
               child: Text(
-                "¿No tienes una cuenta?, registrate ...",
+                "Regresar al login",
                 style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
