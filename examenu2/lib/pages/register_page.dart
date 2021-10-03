@@ -7,20 +7,13 @@ import 'package:examenu2/pages/login_page.dart';
 import 'package:fzregex/utils/pattern.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+//Encriptación y Desencriptación de la contraseña (o cualquier otro texto)
 _encryptPass(String pass) async {
   final plainText = pass;
   final key = encrypt.Key.fromLength(32);
   final iv = encrypt.IV.fromLength(8);
   final encrypter = encrypt.Encrypter(encrypt.Salsa20(key));
-
   final encrypted = encrypter.encrypt(plainText, iv: iv);
-  final decrypted = encrypter.decrypt(encrypted, iv: iv);
-  print("Encriptación del Registro");
-  print("Desencriptada");
-  print(decrypted); // Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  print("Encriptada");
-  print(encrypted
-      .base64); // CR+IAWBEx3sA/dLkkFM/orYr9KftrGa7lIFSAAmVPbKIOLDOzGwEi9ohstDBqDLIaXMEeulwXQ==
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('encrypt', encrypted.toString());
 }
@@ -28,6 +21,7 @@ _encryptPass(String pass) async {
 // ignore: must_be_immutable
 class RegisterPage extends StatelessWidget {
   //_ quiere decir que es privada
+  //Variables privadas
   String _name = "";
   String _user = "";
   String _pass = "";
@@ -38,6 +32,7 @@ class RegisterPage extends StatelessWidget {
 
   RegisterPage({Key? key}) : super(key: key);
 
+  //Guardar los datos del registro para que se puedan acceder desde donde sea
   _setState() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('nombre', _name);
@@ -58,7 +53,7 @@ class RegisterPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            height: size.height * 0.10,
+            height: size.height * 0.03,
           ),
           Container(
             alignment: Alignment.centerLeft,
@@ -73,7 +68,7 @@ class RegisterPage extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: size.height * 0.05,
+            height: size.height * 0.01,
           ),
           //Nombre
           Container(
@@ -89,7 +84,7 @@ class RegisterPage extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: size.height * 0.03,
+            height: size.height * 0.02,
           ),
           //Usuario
           Container(
@@ -105,7 +100,7 @@ class RegisterPage extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: size.height * 0.03,
+            height: size.height * 0.02,
           ),
           //Email
           Container(
@@ -120,7 +115,7 @@ class RegisterPage extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: size.height * 0.03,
+            height: size.height * 0.02,
           ),
           //Contraseña
           Container(
@@ -137,7 +132,7 @@ class RegisterPage extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: size.height * 0.03,
+            height: size.height * 0.02,
           ),
           //Verificar la contraseña
           Container(
@@ -180,7 +175,7 @@ class RegisterPage extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: size.height * 0.03,
+            height: size.height * 0.02,
           ),
           //Botón de guardar
           Container(
@@ -276,24 +271,6 @@ class RegisterPage extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            alignment: Alignment.centerRight,
-            margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-            child: GestureDetector(
-              onTap: () {
-                print("Click en guardar");
-                Navigator.pop(context);
-                //Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-              },
-              child: Text(
-                "Regresar al login",
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2661FA)),
-              ),
-            ),
-          )
         ],
       ),
     )));

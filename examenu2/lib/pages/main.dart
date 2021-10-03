@@ -7,7 +7,6 @@ void main() {
       statusBarColor: Colors.transparent,
       systemNavigationBarColor: Colors.transparent));
   runApp(MaterialApp(
-    title: "First Flutter App",
     home: LoginPage(),
     debugShowCheckedModeBanner: false,
     theme: ThemeData(

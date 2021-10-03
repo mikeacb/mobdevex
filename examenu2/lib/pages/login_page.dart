@@ -17,10 +17,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  //Variables privadas
   String _user = "";
   String _pass = "";
   String _email = "";
   String _en = "";
+  //Variables para guardar los datos del registro
   String user = "";
   String pass = "";
   String email = "";
@@ -38,22 +40,17 @@ class _LoginPageState extends State<LoginPage> {
     ]);
   }
 
+  //Encriptación y Desencriptación de la contraseña (o cualquier otro texto)
   _encryptPass(String pass) {
     final plainText = pass;
     final key = encrypt.Key.fromLength(32);
     final iv = encrypt.IV.fromLength(8);
     final encrypter = encrypt.Encrypter(encrypt.Salsa20(key));
-
     final encrypted = encrypter.encrypt(plainText, iv: iv);
-    final decrypted = encrypter.decrypt(encrypted, iv: iv);
     _en = encrypted.toString();
-    print("Encriptación del Registro");
-    print("Desencriptada");
-    print(decrypted);
-    print("Encriptada");
-    print(encrypted.base64);
   }
 
+  //Cargar los datos del registro para que se pueda accedar al Home
   _cargarDatos() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -69,11 +66,13 @@ class _LoginPageState extends State<LoginPage> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Background(
+        //Formulario
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              //Título
               Container(
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 40),
@@ -137,6 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock), labelText: "Contraseña"),
                   )),
+              //Recuperación de la contraseña
               Container(
                   alignment: Alignment.centerRight,
                   margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
@@ -147,6 +147,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: size.height * 0.05,
               ),
+              //Botón para entrar al Home
               Container(
                 alignment: Alignment.centerRight,
                 margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
@@ -252,12 +253,12 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     )),
               ),
+              //Te lleva al registro de usuarios
               Container(
                 alignment: Alignment.centerRight,
                 margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                 child: GestureDetector(
                   onTap: () {
-                    print("Click en registrar!");
                     Navigator.push(
                         context,
                         MaterialPageRoute(
