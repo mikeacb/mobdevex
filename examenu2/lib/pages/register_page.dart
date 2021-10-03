@@ -1,8 +1,9 @@
 import 'dart:async';
-
+import 'package:fzregex/fzregex.dart';
 import 'package:flutter/material.dart';
 import 'package:examenu2/components/background.dart';
 import 'package:examenu2/pages/login_page.dart';
+import 'package:fzregex/utils/pattern.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
@@ -171,7 +172,26 @@ class RegisterPage extends StatelessWidget {
                 final form = _formKey.currentState;
                 if (form!.validate()) {
                   form.save();
-                  if (_pass == _temppass) {
+                  if (Fzregex.hasMatch(_email, FzPattern.email) == false) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Row(
+                        children: [
+                          Icon(
+                            Icons.error,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: Text("No parece un email correcto"),
+                          )
+                        ],
+                      ),
+                      duration: Duration(seconds: 2),
+                    ));
+                  } else if (_pass == _temppass) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: Colors.green,
                         content: Row(children: [
