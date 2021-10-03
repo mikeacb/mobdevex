@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'package:fzregex/utils/fzregex.dart';
+import 'package:fzregex/utils/pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:examenu2/components/background.dart';
 import 'package:examenu2/pages/register_page.dart';
@@ -17,8 +18,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String _user = "";
   String _pass = "";
+  String _email = "";
   String user = "";
   String pass = "";
+  String email = "";
+
   var _formKey = GlobalKey<FormState>();
 
   @override
@@ -36,6 +40,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       user = prefs.getString('usuario').toString();
       pass = prefs.getString('contraseña').toString();
+      email = prefs.getString('email').toString();
     });
   }
 
@@ -64,6 +69,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: size.height * 0.03,
               ),
+              //Usuario
               Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(horizontal: 40),
@@ -73,11 +79,27 @@ class _LoginPageState extends State<LoginPage> {
                         : null,
                     onSaved: (value) => this._user = value.toString(),
                     decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.email), labelText: "Usuario"),
+                        prefixIcon: Icon(Icons.person), labelText: "Usuario"),
                   )),
               SizedBox(
                 height: size.height * 0.03,
               ),
+              //Correo
+              Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.symmetric(horizontal: 40),
+                  child: TextFormField(
+                    validator: (value) => value.toString().isEmpty
+                        ? "El email es obligatorio"
+                        : null,
+                    onSaved: (value) => this._email = value.toString(),
+                    decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.email), labelText: "Email"),
+                  )),
+              SizedBox(
+                height: size.height * 0.03,
+              ),
+              //Contraseña
               Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(horizontal: 40),
@@ -108,7 +130,29 @@ class _LoginPageState extends State<LoginPage> {
                       final form = _formKey.currentState;
                       if (form!.validate()) {
                         form.save();
-                        if (_user == user && _pass == pass) {
+                        if (Fzregex.hasMatch(_email, FzPattern.email) ==
+                            false) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Row(
+                              children: [
+                                Icon(
+                                  Icons.error,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: Text("No parece un email correcto"),
+                                )
+                              ],
+                            ),
+                            duration: Duration(seconds: 2),
+                          ));
+                        } else if (_user == user &&
+                            _pass == pass &&
+                            _email == email) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: Colors.green,
                             content: Row(

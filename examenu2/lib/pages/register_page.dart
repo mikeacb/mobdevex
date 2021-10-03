@@ -20,10 +20,11 @@ class RegisterPage extends StatelessWidget {
   RegisterPage({Key? key}) : super(key: key);
 
   _setState() async {
-    final SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setString('nombre', _name);
-    pref.setString('usuario', _user);
-    pref.setString('contraseña', _pass);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('nombre', _name);
+    prefs.setString('usuario', _user);
+    prefs.setString('contraseña', _pass);
+    prefs.setString('email', _email);
   }
 
   @override
@@ -155,7 +156,7 @@ class RegisterPage extends StatelessWidget {
               },
               onSaved: (value) => value.toString(),
               decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.verified_user),
+                  prefixIcon: Icon(Icons.lock),
                   labelText: "Reescribir la contraseña"),
             ),
           ),
@@ -196,7 +197,7 @@ class RegisterPage extends StatelessWidget {
                         backgroundColor: Colors.green,
                         content: Row(children: [
                           Icon(
-                            Icons.error,
+                            Icons.verified_user,
                             color: Colors.white,
                           ),
                           SizedBox(
