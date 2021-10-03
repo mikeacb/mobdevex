@@ -1,10 +1,29 @@
 import 'dart:async';
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:fzregex/fzregex.dart';
 import 'package:flutter/material.dart';
 import 'package:examenu2/components/background.dart';
 import 'package:examenu2/pages/login_page.dart';
 import 'package:fzregex/utils/pattern.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+_encryptPass(String pass) async {
+  final plainText = pass;
+  final key = encrypt.Key.fromLength(32);
+  final iv = encrypt.IV.fromLength(8);
+  final encrypter = encrypt.Encrypter(encrypt.Salsa20(key));
+
+  final encrypted = encrypter.encrypt(plainText, iv: iv);
+  final decrypted = encrypter.decrypt(encrypted, iv: iv);
+  print("Encriptación del Registro");
+  print("Desencriptada");
+  print(decrypted); // Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  print("Encriptada");
+  print(encrypted
+      .base64); // CR+IAWBEx3sA/dLkkFM/orYr9KftrGa7lIFSAAmVPbKIOLDOzGwEi9ohstDBqDLIaXMEeulwXQ==
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('encrypt', encrypted.toString());
+}
 
 // ignore: must_be_immutable
 class RegisterPage extends StatelessWidget {
@@ -211,6 +230,7 @@ class RegisterPage extends StatelessWidget {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => LoginPage()));
                     });
+                    _encryptPass(_pass);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: Colors.red,

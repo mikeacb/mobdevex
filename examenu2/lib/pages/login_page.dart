@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:fzregex/utils/fzregex.dart';
 import 'package:fzregex/utils/pattern.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,11 @@ class _LoginPageState extends State<LoginPage> {
   String _user = "";
   String _pass = "";
   String _email = "";
+  String _en = "";
   String user = "";
   String pass = "";
   String email = "";
+  String en = "";
 
   var _formKey = GlobalKey<FormState>();
 
@@ -35,12 +38,29 @@ class _LoginPageState extends State<LoginPage> {
     ]);
   }
 
+  _encryptPass(String pass) {
+    final plainText = pass;
+    final key = encrypt.Key.fromLength(32);
+    final iv = encrypt.IV.fromLength(8);
+    final encrypter = encrypt.Encrypter(encrypt.Salsa20(key));
+
+    final encrypted = encrypter.encrypt(plainText, iv: iv);
+    final decrypted = encrypter.decrypt(encrypted, iv: iv);
+    _en = encrypted.toString();
+    print("Encriptación del login");
+    print("Desencriptada");
+    print(decrypted);
+    print("Encriptada");
+    print(encrypted.base64);
+  }
+
   _cargarDatos() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       user = prefs.getString('usuario').toString();
       pass = prefs.getString('contraseña').toString();
       email = prefs.getString('email').toString();
+      en = prefs.getString('encrypt').toString();
     });
   }
 
@@ -105,10 +125,15 @@ class _LoginPageState extends State<LoginPage> {
                   margin: EdgeInsets.symmetric(horizontal: 40),
                   child: TextFormField(
                     obscureText: true,
-                    validator: (value) => value.toString().isEmpty
-                        ? "Contraseña es obligatoria"
-                        : null,
-                    onSaved: (value) => this._pass = value.toString(),
+                    validator: (value) {
+                      if (value.toString().isEmpty) {
+                        return "La contraseña es obligatoria";
+                      } else {
+                        this._pass = value.toString();
+                        _encryptPass(_pass);
+                      }
+                    },
+                    onSaved: (value) => value.toString(),
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock), labelText: "Contraseña"),
                   )),
@@ -151,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                             duration: Duration(seconds: 2),
                           ));
                         } else if (_user == user &&
-                            _pass == pass &&
+                            _en == en &&
                             _email == email) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: Colors.green,
