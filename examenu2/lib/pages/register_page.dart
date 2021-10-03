@@ -211,7 +211,7 @@ class RegisterPage extends StatelessWidget {
                         backgroundColor: Colors.green,
                         content: Row(children: [
                           Icon(
-                            Icons.verified_user,
+                            Icons.check,
                             color: Colors.white,
                           ),
                           SizedBox(
@@ -221,7 +221,7 @@ class RegisterPage extends StatelessWidget {
                             child: Text("Registro exitoso"),
                           )
                         ])));
-                    Timer(Duration(seconds: 1), () {
+                    Timer(Duration(seconds: 2), () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => LoginPage()));
                     });

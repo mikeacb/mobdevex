@@ -197,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             duration: Duration(seconds: 2),
                           ));
-                          Timer(Duration(seconds: 1), () {
+                          Timer(Duration(seconds: 2), () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
