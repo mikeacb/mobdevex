@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:examenu2/components/background.dart';
+import 'package:examenu2/pages/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
@@ -14,6 +17,13 @@ class RegisterPage extends StatelessWidget {
   var _formKey = GlobalKey<FormState>();
 
   RegisterPage({Key? key}) : super(key: key);
+
+  _setState() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('nombre', _name);
+    pref.setString('usuario', _user);
+    pref.setString('contraseña', _pass);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,16 +147,8 @@ class RegisterPage extends StatelessWidget {
                       ),
                       duration: Duration(seconds: 2),
                     ));
-                    print("Contraseñas NO");
-                    print("1.- " + _pass);
-                    print("2.- " + _temppass);
                   } else {
-                    print("Las contraseñas si coinciden");
-                    //Aqui
                     this._temppass = value.toString();
-                    print("Contraseñas SI");
-                    print("1.- " + _pass);
-                    print("2.- " + _temppass);
                   }
                 }
               },
@@ -159,21 +161,35 @@ class RegisterPage extends StatelessWidget {
           SizedBox(
             height: size.height * 0.03,
           ),
+          //Botón de guardar
           Container(
             alignment: Alignment.centerRight,
             margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
             child: ElevatedButton(
               onPressed: () {
+                _setState();
                 final form = _formKey.currentState;
                 if (form!.validate()) {
-                  //print("Válido");
-                  //print(_user);
-                  //print(_pass);
                   form.save();
-                  //print(_user);
-                  //print(_pass);
-                  if (_user == "mike" && _pass == "Mike06") {
-                    //Mandar a home
+                  if (_pass == _temppass) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Row(children: [
+                          Icon(
+                            Icons.error,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: Text("Registro exitoso"),
+                          )
+                        ])));
+                    Timer(Duration(seconds: 1), () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => LoginPage()));
+                    });
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: Colors.red,
@@ -195,7 +211,6 @@ class RegisterPage extends StatelessWidget {
                   print("No válido");
                 }
               },
-              //Botón de guardar
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(80)),
@@ -225,7 +240,7 @@ class RegisterPage extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
             child: GestureDetector(
               onTap: () {
-                print("Click en registrar!");
+                print("Click en guardar");
                 Navigator.pop(context);
                 //Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
               },
