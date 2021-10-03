@@ -52,6 +52,7 @@ class RegisterPage extends StatelessWidget {
               validator: (value) =>
                   value.toString().isEmpty ? "El nombre es obligatorio" : null,
               onSaved: (value) => this._name = value.toString(),
+              //onChanged: (nam) => this._name = nam,
               decoration: InputDecoration(
                   prefixIcon: Icon(Icons.person), labelText: "Nombre completo"),
             ),
@@ -194,6 +195,7 @@ class RegisterPage extends StatelessWidget {
                   print("No válido");
                 }
               },
+              //Botón de guardar
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(80)),
