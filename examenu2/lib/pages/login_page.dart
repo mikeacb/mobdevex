@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
     final encrypted = encrypter.encrypt(plainText, iv: iv);
     final decrypted = encrypter.decrypt(encrypted, iv: iv);
     _en = encrypted.toString();
-    print("Encriptación del login");
+    print("Encriptación del Registro");
     print("Desencriptada");
     print(decrypted);
     print("Encriptada");
