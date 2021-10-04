@@ -223,6 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             duration: Duration(seconds: 2),
                           ));
+                          _pass = "";
                         }
                       } else {
                         print("no válido");

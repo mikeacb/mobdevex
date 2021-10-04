@@ -140,35 +140,10 @@ class RegisterPage extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 40),
             child: TextFormField(
               obscureText: true,
-              validator: (value) {
-                if (value.toString().isEmpty) {
-                  return "Reescribe la contraseña";
-                } else {
-                  if (_pass != _temppass) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      backgroundColor: Colors.red,
-                      content: Row(
-                        children: [
-                          Icon(
-                            Icons.error,
-                            color: Colors.white,
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: Text("Las contraseñas no son iguales"),
-                          )
-                        ],
-                      ),
-                      duration: Duration(seconds: 2),
-                    ));
-                  } else {
-                    this._temppass = value.toString();
-                  }
-                }
-              },
-              onSaved: (value) => value.toString(),
+              validator: (value) => value.toString().isEmpty
+                  ? "Reescribir la contraseña es obligatorio"
+                  : null,
+              onSaved: (value) => this._temppass = value.toString(),
               decoration: InputDecoration(
                   prefixIcon: Icon(Icons.lock),
                   labelText: "Reescribir la contraseña"),
@@ -204,7 +179,7 @@ class RegisterPage extends StatelessWidget {
                           )
                         ],
                       ),
-                      duration: Duration(seconds: 2),
+                      duration: Duration(seconds: 1),
                     ));
                   } else if (_pass == _temppass) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -221,30 +196,46 @@ class RegisterPage extends StatelessWidget {
                             child: Text("Registro exitoso"),
                           )
                         ])));
-                    Timer(Duration(seconds: 2), () {
+                    Timer(Duration(seconds: 1), () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => LoginPage()));
                     });
                     _encryptPass(_pass);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        backgroundColor: Colors.red,
-                        content: Row(children: [
-                          Icon(
-                            Icons.error,
-                            color: Colors.white,
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: Text("Usuario y/o contraseña incorrectos"),
-                            //duration: Duration(seconds: 2),
-                          )
-                        ])));
+                      backgroundColor: Colors.red,
+                      content: Row(children: [
+                        Icon(
+                          Icons.error,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: Text("Las contraseñas no coinciden"),
+                        )
+                      ]),
+                      duration: Duration(seconds: 1),
+                    ));
+                    _pass = "";
+                    _temppass = "";
                   }
                 } else {
-                  print("No válido");
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Row(children: [
+                        Icon(
+                          Icons.error,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: Text("No tuvo éxito el registro"),
+                        )
+                      ])));
                 }
               },
               style: ElevatedButton.styleFrom(
