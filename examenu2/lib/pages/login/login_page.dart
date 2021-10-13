@@ -18,7 +18,6 @@ class _LoginPageState extends State<LoginPage> {
   // Variable privada
   LoginController _controller = LoginController();
   // Variables para guardar los datos del registro
-  String user = "";
   String pass = "";
   String email = "";
   String en = "";
@@ -53,7 +52,6 @@ class _LoginPageState extends State<LoginPage> {
   _cargarDatos() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      user = prefs.getString('usuario').toString();
       pass = prefs.getString('contraseña').toString();
       email = prefs.getString('email').toString();
       en = prefs.getString('encrypt').toString();
@@ -84,22 +82,6 @@ class _LoginPageState extends State<LoginPage> {
                   textAlign: TextAlign.left,
                 ),
               ),
-              SizedBox(
-                height: size.height * 0.03,
-              ),
-              // Usuario
-              Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.symmetric(horizontal: 40),
-                  child: TextFormField(
-                    validator: (value) => value.toString().isEmpty
-                        ? "Usuario es obligatorio"
-                        : null,
-                    onSaved: (value) =>
-                        this._controller.user = value.toString(),
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.person), labelText: "Usuario"),
-                  )),
               SizedBox(
                 height: size.height * 0.03,
               ),
