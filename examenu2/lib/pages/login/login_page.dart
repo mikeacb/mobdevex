@@ -1,11 +1,9 @@
-import 'dart:async';
 import 'package:encrypt/encrypt.dart' as encrypt;
-import 'package:fzregex/utils/fzregex.dart';
-import 'package:fzregex/utils/pattern.dart';
+import 'package:examenu2/pages/login/login_controller.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
 import 'package:examenu2/components/background.dart';
-import 'package:examenu2/pages/register_page.dart';
-import 'package:examenu2/pages/home.dart';
+import 'package:examenu2/pages/register/register_page.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,18 +15,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  //Variables privadas
-  String _user = "";
-  String _pass = "";
-  String _email = "";
-  String _en = "";
-  //Variables para guardar los datos del registro
+  // Variable privada
+  LoginController _controller = LoginController();
+  // Variables para guardar los datos del registro
   String user = "";
   String pass = "";
   String email = "";
   String en = "";
-
-  var _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -38,19 +31,25 @@ class _LoginPageState extends State<LoginPage> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    // Puede que se den errores, porque se ejecuta antes que la vista
+    // Para eso agregamos la siguiente función,
+    // que se ejecuta después de la primera llamada del Build Method
+    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      _controller.init(context);
+    });
   }
 
-  //Encriptación y Desencriptación de la contraseña (o cualquier otro texto)
+  // Encriptación y Desencriptación de la contraseña (o cualquier otro texto)
   _encryptPass(String pass) {
     final plainText = pass;
     final key = encrypt.Key.fromLength(32);
     final iv = encrypt.IV.fromLength(8);
     final encrypter = encrypt.Encrypter(encrypt.Salsa20(key));
     final encrypted = encrypter.encrypt(plainText, iv: iv);
-    _en = encrypted.toString();
+    _controller.en = encrypted.toString();
   }
 
-  //Cargar los datos del registro para que se pueda accedar al Home
+  // Cargar los datos del registro para que se pueda accedar al Home
   _cargarDatos() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -66,13 +65,13 @@ class _LoginPageState extends State<LoginPage> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Background(
-        //Formulario
+        // Formulario
         child: Form(
-          key: _formKey,
+          key: _controller.formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              //Título
+              // Título
               Container(
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 40),
@@ -88,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: size.height * 0.03,
               ),
-              //Usuario
+              // Usuario
               Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(horizontal: 40),
@@ -96,14 +95,15 @@ class _LoginPageState extends State<LoginPage> {
                     validator: (value) => value.toString().isEmpty
                         ? "Usuario es obligatorio"
                         : null,
-                    onSaved: (value) => this._user = value.toString(),
+                    onSaved: (value) =>
+                        this._controller.user = value.toString(),
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.person), labelText: "Usuario"),
                   )),
               SizedBox(
                 height: size.height * 0.03,
               ),
-              //Correo
+              // Correo
               Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(horizontal: 40),
@@ -111,14 +111,15 @@ class _LoginPageState extends State<LoginPage> {
                     validator: (value) => value.toString().isEmpty
                         ? "El email es obligatorio"
                         : null,
-                    onSaved: (value) => this._email = value.toString(),
+                    onSaved: (value) =>
+                        this._controller.email = value.toString(),
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.email), labelText: "Email"),
                   )),
               SizedBox(
                 height: size.height * 0.03,
               ),
-              //Contraseña
+              // Contraseña
               Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(horizontal: 40),
@@ -128,8 +129,8 @@ class _LoginPageState extends State<LoginPage> {
                       if (value.toString().isEmpty) {
                         return "La contraseña es obligatoria";
                       } else {
-                        this._pass = value.toString();
-                        _encryptPass(_pass);
+                        this._controller.pass = value.toString();
+                        _encryptPass(_controller.pass);
                       }
                     },
                     onSaved: (value) => value.toString(),
@@ -152,83 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                 alignment: Alignment.centerRight,
                 margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                 child: ElevatedButton(
-                    onPressed: () {
-                      final form = _formKey.currentState;
-                      if (form!.validate()) {
-                        form.save();
-                        if (Fzregex.hasMatch(_email, FzPattern.email) ==
-                            false) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            backgroundColor: Colors.red,
-                            content: Row(
-                              children: [
-                                Icon(
-                                  Icons.error,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Expanded(
-                                  child: Text("No parece un email correcto"),
-                                )
-                              ],
-                            ),
-                            duration: Duration(seconds: 2),
-                          ));
-                        } else if (_user == user &&
-                            _en == en &&
-                            _email == email) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            backgroundColor: Colors.green,
-                            content: Row(
-                              children: [
-                                Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Expanded(
-                                  child: Text("Bienvenido de Vuelta"),
-                                )
-                              ],
-                            ),
-                            duration: Duration(seconds: 2),
-                          ));
-                          Timer(Duration(seconds: 2), () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Home()));
-                          });
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            backgroundColor: Colors.red,
-                            content: Row(
-                              children: [
-                                Icon(
-                                  Icons.error,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                      "Usuario y/o contraseña incorrectos!"),
-                                )
-                              ],
-                            ),
-                            duration: Duration(seconds: 2),
-                          ));
-                          _pass = "";
-                        }
-                      } else {
-                        print("no válido");
-                      }
-                    },
+                    onPressed: () => _controller.login(),
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(80)),

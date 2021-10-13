@@ -3,7 +3,7 @@ import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:fzregex/fzregex.dart';
 import 'package:flutter/material.dart';
 import 'package:examenu2/components/background.dart';
-import 'package:examenu2/pages/login_page.dart';
+import 'package:examenu2/pages/login/login_page.dart';
 import 'package:fzregex/utils/pattern.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

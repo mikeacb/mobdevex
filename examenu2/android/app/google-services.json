@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "866515061856",
+    "project_id": "mobdev-1c7e2",
+    "storage_bucket": "mobdev-1c7e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866515061856:android:ca53e88ed130930a6ac705",
+        "android_client_info": {
+          "package_name": "com.example.examenu2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "866515061856-77u64os65icni664gcppkmp6mhtr09j6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.examenu2",
+            "certificate_hash": "f97f1f47a366046d795ecff471e9287b925420ff"
+          }
+        },
+        {
+          "client_id": "866515061856-3en483d08vjrl6rpm0v3ptitvf69ai6m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChi2lVoJrxSxYNDv6ykqtwiDYFEhZIkuE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "866515061856-3en483d08vjrl6rpm0v3ptitvf69ai6m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
