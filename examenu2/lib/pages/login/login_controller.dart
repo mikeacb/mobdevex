@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fzregex/utils/fzregex.dart';
 import 'package:fzregex/utils/pattern.dart';
@@ -13,6 +14,11 @@ class LoginController {
   //Para que se inizialice tarde
   late BuildContext context;
   late FirebaseAuth _auth;
+
+  Future<void> initState() async {
+    Firebase.initializeApp();
+  }
+
   //Nos regresa un valor de tipo Future
   //Sirve para vincular la vista con el controlador
   Future init(BuildContext context) async {
